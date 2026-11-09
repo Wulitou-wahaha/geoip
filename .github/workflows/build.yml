@@ -11,6 +11,7 @@ on:
       - ".gitignore"
       - "LICENSE*"
       - "*.md"
+
 permissions:
   contents: write
 jobs:
@@ -58,7 +59,8 @@ jobs:
       - name: Build geoip files
         run: |
           go build ./
-          ./geoip convert -c ./config.json
+          ./geoip convert -c ./config-full.json
+          ./geoip convert -c ./config-lite.json
 
       - name: Git push assets to "release" branch
         run: |
@@ -67,7 +69,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b release
-          git add ./geoip.dat
+          git add ./geoip.dat ./geoip-full.dat
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add geoip "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u geoip release
